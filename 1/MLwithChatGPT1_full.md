@@ -40,7 +40,7 @@ The mathematical expressions for a feedforward neural network can be described l
 * $$a^{(l)} = f^{(l)} (z^{(l)})$$
 3. **Output Layer** ($l=L$):
 * $$z^{(L)} = W^{(L)} a^{(L-1)} + b^{(L)}$$
-* $$\hat y = a^{(L)} = f^{(L)} (z^{(L)})
+* $$\hat y = a^{(L)} = f^{(L)} (z^{(L)})$$
 
  represents the predicted output of the neural network.
 
