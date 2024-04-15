@@ -1,0 +1,227 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "provenance": []
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    },
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "cells": [
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "bjXNjr9Qb3bZ",
+        "outputId": "dd400829-1e3e-4e74-ccb7-473e566157ae"
+      },
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stderr",
+          "text": [
+            "The attention mask and the pad token id were not set. As a consequence, you may observe unexpected behavior. Please pass your input's `attention_mask` to obtain reliable results.\n",
+            "Setting `pad_token_id` to `eos_token_id`:50256 for open-end generation.\n"
+          ]
+        },
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Generated Text:\n",
+            "In a groundbreaking scientific discovery, researchers have found evidence of a new type of cancer called \"carcinoma\" that is more common in women than men.\n",
+            "\n",
+            "The discovery, published in the journal Cancer, is the first to show that the\n"
+          ]
+        }
+      ],
+      "source": [
+        "from transformers import GPT2Tokenizer, GPT2LMHeadModel\n",
+        "import torch\n",
+        "\n",
+        "# Load pre-trained model and tokenizer\n",
+        "tokenizer = GPT2Tokenizer.from_pretrained(\"gpt2\")\n",
+        "model = GPT2LMHeadModel.from_pretrained(\"gpt2\")\n",
+        "\n",
+        "# Set the model to evaluation mode\n",
+        "model.eval()\n",
+        "\n",
+        "# Set a seed for reproducibility (optional)\n",
+        "torch.manual_seed(42)\n",
+        "\n",
+        "# Define a prompt\n",
+        "prompt = \"In a groundbreaking scientific discovery, researchers have found evidence of\"\n",
+        "\n",
+        "# Tokenize the prompt\n",
+        "input_ids = tokenizer.encode(prompt, return_tensors=\"pt\")\n",
+        "\n",
+        "# Generate text based on the prompt\n",
+        "output = model.generate(input_ids, max_length=50, num_return_sequences=1, temperature=0.7, top_k=10)\n",
+        "\n",
+        "# Decode the generated output\n",
+        "generated_text = tokenizer.decode(output[0], skip_special_tokens=True)\n",
+        "\n",
+        "# Print the generated text\n",
+        "print(\"Generated Text:\")\n",
+        "print(generated_text)"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "model"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "XyVimNNTb4_B",
+        "outputId": "273840fb-39c6-4e9e-c41e-4855b55cb69a"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "GPT2LMHeadModel(\n",
+              "  (transformer): GPT2Model(\n",
+              "    (wte): Embedding(50257, 768)\n",
+              "    (wpe): Embedding(1024, 768)\n",
+              "    (drop): Dropout(p=0.1, inplace=False)\n",
+              "    (h): ModuleList(\n",
+              "      (0-11): 12 x GPT2Block(\n",
+              "        (ln_1): LayerNorm((768,), eps=1e-05, elementwise_affine=True)\n",
+              "        (attn): GPT2Attention(\n",
+              "          (c_attn): Conv1D()\n",
+              "          (c_proj): Conv1D()\n",
+              "          (attn_dropout): Dropout(p=0.1, inplace=False)\n",
+              "          (resid_dropout): Dropout(p=0.1, inplace=False)\n",
+              "        )\n",
+              "        (ln_2): LayerNorm((768,), eps=1e-05, elementwise_affine=True)\n",
+              "        (mlp): GPT2MLP(\n",
+              "          (c_fc): Conv1D()\n",
+              "          (c_proj): Conv1D()\n",
+              "          (act): NewGELUActivation()\n",
+              "          (dropout): Dropout(p=0.1, inplace=False)\n",
+              "        )\n",
+              "      )\n",
+              "    )\n",
+              "    (ln_f): LayerNorm((768,), eps=1e-05, elementwise_affine=True)\n",
+              "  )\n",
+              "  (lm_head): Linear(in_features=768, out_features=50257, bias=False)\n",
+              ")"
+            ]
+          },
+          "metadata": {},
+          "execution_count": 2
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "output"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "Mrmywnq-cKtH",
+        "outputId": "b34d028b-2502-4a23-aeae-c91a7726356a"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "tensor([[  818,   257, 31088,  5654,  9412,    11,  4837,   423,  1043,  2370,\n",
+              "           286,   257,   649,  2099,   286,  4890,  1444,   366,    66,  5605,\n",
+              "           259,  6086,     1,   326,   318,   517,  2219,   287,  1466,   621,\n",
+              "          1450,    13,   198,   198,   464,  9412,    11,  3199,   287,   262,\n",
+              "          3989, 15523,    11,   318,   262,   717,   284,   905,   326,   262]])"
+            ]
+          },
+          "metadata": {},
+          "execution_count": 3
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "prompt = \"Summarize this dialog: \\n A: I am fine. B: I am also fine. Summary:\""
+      ],
+      "metadata": {
+        "id": "2Yeyry0AcSX5"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "input_ids = tokenizer.encode(prompt, return_tensors=\"pt\")\n",
+        "\n",
+        "output = model.generate(input_ids, max_length=50, num_return_sequences=1, temperature=0.7, top_k=10)\n",
+        "\n",
+        "# Decode the generated output\n",
+        "generated_text = tokenizer.decode(output[0], skip_special_tokens=True)\n",
+        "\n",
+        "# Print the generated text\n",
+        "print(\"Generated Text:\")\n",
+        "print(generated_text)"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "OoLHUa5hcmbE",
+        "outputId": "3b2b2438-c732-40a8-9c2d-122da2b9a772"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stderr",
+          "text": [
+            "The attention mask and the pad token id were not set. As a consequence, you may observe unexpected behavior. Please pass your input's `attention_mask` to obtain reliable results.\n",
+            "Setting `pad_token_id` to `eos_token_id`:50256 for open-end generation.\n"
+          ]
+        },
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Generated Text:\n",
+            "Summarize this dialog: \n",
+            " A: I am fine. B: I am also fine. Summary: \n",
+            "\n",
+            "A: I am fine. B: I am also fine. Summary: \n",
+            "\n",
+            "A: I am fine.\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [],
+      "metadata": {
+        "id": "Nz6ruDvFcpmT"
+      },
+      "execution_count": null,
+      "outputs": []
+    }
+  ]
+}
